@@ -31,22 +31,12 @@ using namespace std;
 int main() {
     
     vector<Image> coleccion;
-    
-    std::stringstream day;
-    int day_;
-
-    day << "1" << "1";
-    day_ = stoi(day.str());
-
-    cout << day_ << "\n";
-    
 
     Image img(24.3, "29072019", "jpg", "Pepe");
     Image img2(25, "14022018", "RAW", "Luis");
     Image img3(22, "23122014", "png", "Mario");
     Image img4(20.2, "17042019", "jpg", "Pepe");
 
-    
 
     coleccion.push_back(img); coleccion.push_back(img2); coleccion.push_back(img3); coleccion.push_back(img4);
 
@@ -55,8 +45,5 @@ int main() {
     for (auto& image : coleccion) {
         cout << image.get_year() << "\n";
     }
-
-    
-
 
 }
