@@ -33,10 +33,10 @@ class Image {
         std::string name;
 
         // Default Class Constructor 
-        Image(float sz, std::string dt, std::string ext, std::string nm) {
+        Image(int i, float sz, std::string dt, std::string ext, std::string nm) {
 
-                //id = this->id;
                 std::stringstream ss;
+                id = i;
                 if (size < 0.0) {
                     size = 0.0;
                 } else {
@@ -46,26 +46,20 @@ class Image {
                 const char* str = date.c_str();
                 extension = ext;    
                 name = nm;
-                
-                ss << str[0] << str[1];
-                day = stoi(ss.str());
-                ss.clear();
-                ss.str("");
-                ss << str[2] << str[3];
-                month = stoi(ss.str());
-                ss.clear();
-                ss.str("");
-                ss << str[4] << str[5] << str[6] << str[7];
-                year = stoi(ss.str());
-                ss.clear();
-                ss.str("");
+                date_to_int();
 
         }; 
+        
+
+        // Copy constructor 
         Image(const Image&);
         int get_day() {return day;}; int get_month() {return month;}; int get_year() {return year;};
 
         // To String Function
         std::string toString() const;
+
+        // Date to int function
+        void date_to_int();
 
         // Sobre carga de operadores
         bool operator<(const Image*);
@@ -77,7 +71,29 @@ class Image {
         
 };
 
+void Image::date_to_int() {
+
+    std::stringstream ssdt;
+
+    const char* str = date.c_str();
+
+    ssdt << str[0] << str[1];
+    day = stoi(ssdt.str());
+    ssdt.clear();
+    ssdt.str("");
+    ssdt << str[2] << str[3];
+    month = stoi(ssdt.str());
+    ssdt.clear();
+    ssdt.str("");
+    ssdt << str[4] << str[5] << str[6] << str[7];
+    year = stoi(ssdt.str());
+    ssdt.clear();
+    ssdt.str("");   
+
+}
+
 Image::Image(const Image &other) {
+    id = other.id;
     size = other.size;
     date = other.date;
     extension = other.extension;
@@ -163,7 +179,7 @@ std::string Image::toString() const {
 
     std::stringstream data;
 
-    //data << "Imagen: " << id;
+    data << "Imagen: " << id;
     data << "\n";
     data << "\tTomada por " << name << " el " << day << " del " << month << " de " << year;
     data << "\n";
