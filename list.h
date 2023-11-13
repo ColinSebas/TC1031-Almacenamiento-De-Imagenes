@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "imagen.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ class Node {
         Node<T> *next;
 
         friend class List<T>;
+        friend class Image;
 
 };
 
@@ -47,53 +49,37 @@ Node<T>::Node(const Node<T> &other) {
 
 
 template <class T>
-class List {
+class List : public Image {
 
     private:
 
-        int year;
         Node<T> *head;
         int size;
-        void swap(List<T>&, int, int);
+        //void swap(List<T>&, int, int);
 
     public: 
 
-        List();
+        List() : head(NULL), size(0) {}
 		List(const List<T>&) ;
-        List(int);
 		~List();
 
-        bool empty () const;
         std::string toString() const;
-        void clear();
-        void insertFirst(T);
         int getSize() {return size;};
         int getYear() {return year;};
 
-        //HW
-        void insertion(T); T search (int) const; 
-        bool searchBool(int) const;
-        bool update (unsigned int, T);
-        T deleteAt (int); T deleteFirst (int);
+        void insert(T); 
+        T search (T) const; 
+        T deleteAt (int); 
+        T deleteFirst (int);
 
-        List<T> bubbleSort(const List<T>&);
+        void sort();
 
-        bool operator<(const List<T>*);
-        bool operator<(const List<T>&);
-        bool operator>(const List<T>*);
-        bool operator>(const List<T>&);
+        bool operator<(const Node<T>*);
+        bool operator<(const Node<T>&);
+        bool operator>(const Node<T>*);
+        bool operator>(const Node<T>&);
         
 };
-
-template <class T>
-List<T>::List() : head(0), size(0) {}
-
-template <class T> 
-List<T>::List(int yr) {
-    year = yr;
-    head = 0;
-    size = 0; 
-}
 
 template <class T> 
 List<T>::List(const List<T> &other) {
@@ -103,11 +89,6 @@ List<T>::List(const List<T> &other) {
 
 template <class T>
 List<T>::~List() {
-	clear();
-}
-
-template <class T>
-void List<T>::clear() {
 	Node<T> *p, *q;
 
 	p = head;
@@ -120,81 +101,45 @@ void List<T>::clear() {
 	size = 0;
 }
 
+
 template <class T>
 std::string List<T>::toString() const {
+    std::stringstream prnt;
 
-	std::stringstream aux;
-	Node<T> *p;
+    Node<T>* current = head;
+    while (current != NULL) {
+        prnt << current->value.toString();
+        current = current->next;
+    }
 
-	p = head;
-	aux << "[";
-	while (p != 0) {
-		aux << p->value;
-		if (p->next != 0) {
-			aux << ", ";
-		}
-		p = p->next;
-	}
-	aux << "]";
-	return aux.str();
-
-}
-
-template <class T> 
-bool List<T>::empty() const {
-    return (head == 0);
+    return prnt.str();
 }
 
 template <class T>
-void List<T>::insertFirst(T val)  {
-	Node<T> *newNode;
+void List<T>::insert(T val) {
 
-	newNode = new Node<T>(val);
-	if (newNode == 0) {
-		cout << "Out of memory";
-	}
-	newNode->next = head;
-	head = newNode;
-	size++;
-
-}
-
-template <class T>
-void List<T>::insertion (T val) {
-
-    Node<T> *newNode, *temp;
+    Node<T> *newNode;
 
     newNode = new Node<T> (val);
     if (newNode == 0) {
         cout << "Out of Memory";
     }
 
-    //Add empty list condition
-    if (empty()) {
-        insertFirst(val);
-        return;
-    }
-
-    temp = head;
-    while (temp->next != 0) {
-        temp = temp->next;
-    }
-
-    newNode->next = 0;
-    temp->next = newNode;
-    size++;
+   newNode->next = head;
+   head = newNode;
+   size++;
 
 }
 
 template <class T>
-T List<T>::search(int val) const {
+T List<T>::search(T img) const {
 
     Node <T> *temp;
 
     temp = head;
     int pos = 0;
     while (temp != 0) {
-        if (temp->value == val) {
+        if (temp->value == img) {
             return pos;
         }
         temp = temp->next;
@@ -204,49 +149,13 @@ T List<T>::search(int val) const {
     return -1;
 
 }
-template <class T>
-bool List<T>::searchBool(int val) const {
-    Node <T> *temp;
-
-    temp = head;
-    int pos = 0;
-    while (temp != 0) {
-        if (temp->value == val) {
-            return true;
-        }
-        temp = temp->next;
-        pos++;
-    }
-
-    return false;
-}
-
-template <class T>
-bool List<T>::update(unsigned int i, T val) {
-
-    int pos = 0;
-    Node <T> *temp = head;
-
-    if (i > size) {
-        return false;
-    }
-
-    while (pos != i) {
-        temp = temp->next;
-        pos++;
-    }
-
-    temp->value = val;
-    return true;
-
-}
 
 template <class T>
 T List<T>::deleteFirst(int i) {
     T val;
     Node<T> *temp;
 
-    if (empty()) {
+    if (head == NULL) {
         cout << "No such element";
     }
 
@@ -287,57 +196,112 @@ T List<T>::deleteAt(int i) {
 
 }
 
-/*
 template <class T>
-void List<T>::swap(List<T> &V, int i, int j) {
-	T aux = v[i];
-	v[i] = v[j];
-	v[j] = aux;
+void List<T>::sort() {
+    if (head == NULL || head->next == NULL) {
+        return; // Empty list or only one element
+    }
+
+    bool swapped;
+    do {
+        swapped = false;
+        Node<T>* prev = NULL;
+        Node<T>* current = head;
+        Node<T>* next = head->next;
+
+        while (next != NULL) {
+            if (current->value > next->value) {
+                if (prev == NULL) {
+                    head = next;
+                } else {
+                    prev->next = next;
+                }
+                current->next = next->next;
+                next->next = current;
+                swapped = true;
+                current = next;
+                next = current->next;
+            }
+
+            prev = current;
+            current = next;
+            if (next == NULL) 
+                next = NULL;
+            else 
+                next = next->next;
+        }
+    } while (swapped);
 }
 
-template <class T>
-List<T> List<T>::bubbleSort(const List<T> &source) {
-	List<T> v(source);
-
-	for (int i = v.size() - 1; i > 0; i--) {
-		for (int j = 0; j < i; j++) {
-			if (v[j] > v[j + 1]) {
-				swap(v, j, j + 1);
-			}
-		}
-	}
-	return v;
-}
-
-*/
-
 
 template <class T>
-bool List<T>::operator< (const List<T> &other) {
-    if (this->year < other.year) {
+bool List<T>::operator<(const Node<T> &other) {
+    if  (this->year < other.year) {
         return true;
-    } else {return false;}
+    } 
+    if (this->year == other.year) {
+        if (this->month < other.month) {
+            return true;
+        } else if (this->month == other.month) {
+            if (this->day < other.day) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 template <class T>
-bool List<T>::operator< (const List<T> *other) {
+bool List<T>::operator<(const Node<T> *other) {
     if (this->year < other->year) {
         return true;
-    } else {return false;}
+    } 
+    if (this->year == other->year) {
+        if (this->month < other->month) {
+            return true;
+        } else if (this->month == other->month) {
+            if (this->day < other->day) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 template <class T>
-bool List<T>::operator> (const List<T> &other) {
+bool List<T>::operator>(const Node<T> &other) {
     if (this->year > other.year) {
         return true;
-    } else {return false;}
+    } 
+    if (this->year == other.year) {
+        if (this->month > other.month) {
+            return true;
+        } else if (this->month == other.month) {
+            if (this->day > other.day) {
+                return true;
+            }
+        }
+    }
+    return false;
+
 }
 
 template <class T>
-bool List<T>::operator> (const List<T> *other) {
-    if (this->year > other->year) {
+bool List<T>::operator>(const Node<T> *other) {
+    if  (this->year > other->year) {
         return true;
-    } else {return false;}
+    } 
+    if (this->year == other->year) {
+        if (this->month > other->month) {
+            return true;
+        } else if (this->month == other->month) {
+            if (this->day > other->day) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
+
 
 #endif

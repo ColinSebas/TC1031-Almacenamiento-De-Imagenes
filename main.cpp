@@ -20,19 +20,12 @@
 
 using namespace std;
 
-void menu() {
-
-    cout << "1. Quiero guardar los datos de una imagen.";
-    cout << "2. Quiero crear una colección de imágenes.";
-
-}
-
 int main(int argc, char* argv[]) {
     
     ifstream inputFile;
     ofstream outputFile;
 
-    if (argc != 2) {
+    if (argc != 3) {
     cout << "usage: " << argv[0] << " input_file output_file\n";
     return -1;
     }
@@ -43,11 +36,11 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    //outputFile.open(argv[2]);
+    outputFile.open(argv[2]);
 
     // Vectores de Almacenamiento
     vector<Image> coleccionGral;
-    List<int> years;
+    List<Image> col;
 
     // Contador de ID imágenes
     int idImages = 0;
@@ -72,9 +65,6 @@ int main(int argc, char* argv[]) {
 
                 inputFile >> size >> date >> ext >> name;
                 coleccionGral.push_back(Image(idImages, size, date, ext, name));
-                if (years.searchBool(coleccionGral[idImages].get_year()) == false) {
-                    years.insertion(coleccionGral[idImages].get_year());
-                }
                 idImages++;
                 break;
 
@@ -84,23 +74,21 @@ int main(int argc, char* argv[]) {
 
     }
 
+    for (auto& image : coleccionGral) {
+        col.insert(image);
+        outputFile << image.toString();
+    }
     
-    for (auto& image : coleccionGral) {
-        cout << image.toString();
-    }
-
-    std::sort(coleccionGral.begin(), coleccionGral.end());
-
-    cout << "PAUSA" << "\n";
-
-    for (auto& image : coleccionGral) {
-        cout << image.toString();
-    }
-
-    cout << "\n" << "Years list:" << years.toString();
+    cout << col.toString();
+    col.sort();
+    cout << "AFTER SORTING" << "\n";
+    outputFile << "AFTER SORTING" << "\n";
+    cout << col.toString();
+    outputFile << col.toString();
 
     inputFile.close();
-    //outputFile.close();
+    outputFile.close();
     return 0;
+    
 
 }

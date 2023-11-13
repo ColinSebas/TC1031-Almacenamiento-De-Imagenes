@@ -33,6 +33,9 @@ class Image {
         std::string name;
 
         // Default Class Constructor 
+        Image() : size(0.0), date(""), extension(""), day(0), month(0), year(0), id(0) {}
+
+
         Image(int i, float sz, std::string dt, std::string ext, std::string nm) {
 
                 std::stringstream ss;
@@ -103,7 +106,7 @@ Image::Image(const Image &other) {
     day = other.day;
 }
 
-bool Image::operator< (const Image* other) {
+bool Image::operator<(const Image* other) {
 
     if  (this->year < other->year) {
         return true;
@@ -121,7 +124,7 @@ bool Image::operator< (const Image* other) {
 
 }
 
-bool Image::operator< (const Image& other) {
+bool Image::operator<(const Image& other) {
 
     if  (this->year < other.year) {
         return true;
@@ -139,7 +142,7 @@ bool Image::operator< (const Image& other) {
 
 }
 
-bool Image::operator> (const Image* other) {
+bool Image::operator>(const Image* other) {
 
     if  (this->year > other->year) {
         return true;
@@ -157,7 +160,7 @@ bool Image::operator> (const Image* other) {
 
 }
 
-bool Image::operator> (const Image& other) {
+bool Image::operator>(const Image& other) {
 
     if  (this->year > other.year) {
         return true;
@@ -179,7 +182,7 @@ std::string Image::toString() const {
 
     std::stringstream data;
 
-    data << "Imagen: " << id;
+    data << "\n" << "Imagen: " << id;
     data << "\n";
     data << "\tTomada por " << name << " el " << day << " del " << month << " de " << year;
     data << "\n";
