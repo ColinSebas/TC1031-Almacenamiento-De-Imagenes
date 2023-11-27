@@ -1,9 +1,11 @@
-/* ==========================
+/* 
+ * ==========================
  * File: imagen.h
  * Author: Sebastián Colín 
  * Date: 09/11/2023
  * Description: This file defines the class, image
  * which stores different image traits
+ * ==========================
 */
 
 #include <vector> 
@@ -40,11 +42,7 @@ class Image {
 
                 std::stringstream ss;
                 id = i;
-                if (size < 0.0) {
-                    size = 0.0;
-                } else {
-                    size = sz; 
-                }
+                size = sz;
                 date = dt;
                 const char* str = date.c_str();
                 extension = ext;    
@@ -69,6 +67,8 @@ class Image {
         bool operator<(const Image&);
         bool operator>(const Image*);
         bool operator>(const Image&);
+        bool operator==(const Image*);
+        bool operator==(const Image&);
 
 
         
@@ -178,6 +178,30 @@ bool Image::operator>(const Image& other) {
 
 }
 
+bool Image::operator==(const Image *other) {
+    if (this->year == other->year) {
+        if (this->month == other->month) {
+            if (this->day == other->day) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Image::operator==(const Image &other) {
+    if (this->year == other.year) {
+        if (this->month == other.month) {
+            if (this->day == other.day) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+
 std::string Image::toString() const {
 
     std::stringstream data;
@@ -186,7 +210,7 @@ std::string Image::toString() const {
     data << "\n";
     data << "\tTomada por " << name << " el " << day << " del " << month << " de " << year;
     data << "\n";
-    data << "\t" << extension << " " << size <<  "Mb";
+    data << "\t" << extension << " " << size <<  " Mb";
     data << "\n";
 
     return data.str();

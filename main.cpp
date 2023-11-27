@@ -1,4 +1,4 @@
-// ========================================
+    // ========================================
 // File: main.cpp
 // Author: Sebastian Colin
 // Date: 13/09/23
@@ -38,8 +38,10 @@ int main(int argc, char* argv[]) {
 
     outputFile.open(argv[2]);
 
-    // Vectores de Almacenamiento
-    vector<Image> coleccionGral;
+    // Vectores auxiliar para recorrido
+    vector<Image> coleccionGral; 
+
+    //Lista de almacenamiento 
     List<Image> col;
 
     // Contador de ID imágenes
@@ -81,8 +83,8 @@ int main(int argc, char* argv[]) {
     
     cout << col.toString();
     col.sort();
-    cout << "AFTER SORTING" << "\n";
-    outputFile << "AFTER SORTING" << "\n";
+    cout << "\nAFTER SORTING" << "\n";
+    outputFile << "\nAFTER SORTING" << "\n";
     cout << col.toString();
     outputFile << col.toString();
 

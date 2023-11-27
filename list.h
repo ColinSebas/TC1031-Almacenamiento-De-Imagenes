@@ -68,9 +68,10 @@ class List : public Image {
         int getYear() {return year;};
 
         void insert(T); 
-        T search (T) const; 
+        int search (T) const; 
         T deleteAt (int); 
         T deleteFirst (int);
+        void clear();
 
         void sort();
 
@@ -78,6 +79,8 @@ class List : public Image {
         bool operator<(const Node<T>&);
         bool operator>(const Node<T>*);
         bool operator>(const Node<T>&);
+        bool operator==(const Node<T>*);
+        bool operator==(const Node<T>&);
         
 };
 
@@ -90,6 +93,20 @@ List<T>::List(const List<T> &other) {
 template <class T>
 List<T>::~List() {
 	Node<T> *p, *q;
+
+	p = head;
+	while (p != 0) {
+		q = p->next;
+		delete p;
+		p = q;
+	}
+	head = 0;
+	size = 0;
+}
+
+template <class T>
+void List<T>::clear() {
+    Node<T> *p, *q;
 
 	p = head;
 	while (p != 0) {
@@ -132,7 +149,7 @@ void List<T>::insert(T val) {
 }
 
 template <class T>
-T List<T>::search(T img) const {
+int List<T>::search(T img) const {
 
     Node <T> *temp;
 
@@ -140,6 +157,7 @@ T List<T>::search(T img) const {
     int pos = 0;
     while (temp != 0) {
         if (temp->value == img) {
+            cout << temp->value.toString();
             return pos;
         }
         temp = temp->next;
@@ -296,6 +314,30 @@ bool List<T>::operator>(const Node<T> *other) {
             return true;
         } else if (this->month == other->month) {
             if (this->day > other->day) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+template <class T>
+bool List<T>::operator==(const Node<T> *other) {
+    if (this->year == other->year) {
+        if (this->month == other->month) {
+            if (this->day == other->day) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+template <class T>
+bool List<T>::operator==(const Node<T> &other) {
+    if (this->year == other.year) {
+        if (this->month == other.month) {
+            if (this->day == other.day) {
                 return true;
             }
         }
